@@ -1,5 +1,5 @@
 function getComputerChoice() {
-    let variants = ['камень', 'ножницы', 'бумага'];
+    let variants = ['Камень', 'Ножницы', 'Бумага'];
     const result = variants[Math.floor(Math.random() * variants.length)]
 
     return result
@@ -8,18 +8,33 @@ function getComputerChoice() {
 function getUserChoice() {
      return prompt('Ваш вариант', 'ножницы')
 }
+let sumComp = 0;
+let sumUser = 0;
+let sumRounds = 0
 
-function playRound(playerSelection, computerSelection) {
-    if (playerSelection.toLowerCase() == 'ножницы' && computerSelection == 'камень') {
-        return ('Вы проиграли! Камень побеждает Ножницы.')
-    } else if (playerSelection.toLowerCase() == 'камень' && computerSelection == 'ножницы') {
-        return ('Вы выиграли! Камень побеждает Ножницы.')
-    } else if (playerSelection.toLowerCase() == 'бумага' && computerSelection == 'ножницы') {
-        return ('Вы проиграли! Бумага уступает Ножницам.')
-    } else if (playerSelection.toLowerCase() == 'ножницы' && computerSelection == 'бумага') {
-        return ('Вы выиграли! Ножницы побеждают Бумагу.')
+function playRound(playerSelection, getComputerVariant) {
+    playerSelection = playerSelection.toLowerCase();
+    getComputerVariant = getComputerVariant.toLowerCase();
+
+    if(playerSelection === getComputerVariant) {
+        return `Ничья! Счет пользователя - ${sumUser} : Счет компьютера - ${sumComp}, Всего раундов = ${++sumRounds}`
+    }
+
+    if (sumRounds >= 5) {
+        sumComp = 0;
+        sumUser = 0;
+        sumRounds = 0;
+    }
+
+    if(
+        (playerSelection === 'камень' && getComputerVariant === 'ножницы')||
+        (playerSelection === 'ножницы' && getComputerVariant === 'бумага')||
+        (playerSelection === 'бумага' && getComputerVariant === 'камень')
+    ){
+        return `Вы победили!
+        Счет пользователя - ${++sumUser} : Счет компьютера - ${sumComp}, Всего раундов = ${++sumRounds}`
     } else {
-        return ('Ничья!')
+        return `Вы проиграли! Счет пользователя - ${sumUser} : Счет компьютера - ${++sumComp}, Всего раундов = ${++sumRounds}`
     }
 }
 
@@ -45,4 +60,38 @@ function game() {
     return `Счет пользователя - ${sumUser} : Счет компьютера - ${sumComp}`
 }
 
-console.log(game())
+// console.log(game())
+let playerSelection;
+let getComputerVariant;
+
+const buttons = document.querySelector('.wrapper-buttons');
+
+const choiсePlayers = document.createElement('p');
+container.appendChild(choiсePlayers);
+
+const resultRound = document.createElement('p');
+container.appendChild(resultRound)
+
+buttons.addEventListener('click', (event) => {
+    let target = event.target; 
+
+    switch(target.id){
+        case 'rock' :         
+        playerSelection = "Камень";
+        getComputerVariant = getComputerChoice();
+        choiсePlayers.textContent = `Ваш выбор - ${playerSelection} : Выбор компьютера - ${getComputerVariant};`;
+        resultRound.textContent = playRound(playerSelection, getComputerVariant);
+        break;
+        case 'paper' : 
+        playerSelection = "Бумага";
+        getComputerVariant = getComputerChoice();
+        choiсePlayers.textContent = `Ваш выбор - ${playerSelection} : Выбор компьютера - ${getComputerVariant};`;
+        resultRound.textContent = playRound(playerSelection, getComputerVariant);
+        break;
+        case 'scissors' : 
+        playerSelection = "Ножницы";
+        getComputerVariant = getComputerChoice();
+        choiсePlayers.textContent = `Ваш выбор - ${playerSelection} : Выбор компьютера - ${getComputerVariant};`;
+        resultRound.textContent = playRound(playerSelection, getComputerVariant);
+    }
+});
